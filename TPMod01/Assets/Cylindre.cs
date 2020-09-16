@@ -1,61 +1,79 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿
 using UnityEngine;
 
 public class Cylindre : MonoBehaviour
 {
-    public float radius = 1f;
-    public int meridian = 6;
-    public float cylHeight = 5;
-
     public Material mat;
-    // Start is called before the first frame update
+
+    public int height = 40;
+    public int radius = 5;
+    public int n = 5;
+
+    int[] triangles;
+    int k = 0;
+
     void Start()
     {
         gameObject.AddComponent<MeshFilter>();          // Creation d'un composant MeshFilter qui peut ensuite être visualisé
         gameObject.AddComponent<MeshRenderer>();
-
-        DrawMesh();
+        gameObject.GetComponent<MeshRenderer>().material = mat;
+        DrawCylinder();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void DrawCylinder()
     {
-        DrawMesh();
-    }
+        float x, y, z, theta;
 
-    public void DrawMesh()
-    {
-        Vector3[] vertices = new Vector3[4 * meridian];            // Création des structures de données qui accueilleront sommets et  triangles
-        int[] triangles = new int[6 * meridian];
+        Vector3[] vertices = new Vector3[2 * n + 2];
+        triangles = new int[6 * n + 6 * n]; //3 * 2 vertices per lateral face + 3 vertices per horizontal faces (*2)
 
-
-        for (int m = 0; m < meridian; m++)
+        for (int i = 0; i < n; i++)
         {
+            theta = i * 2 * (float)Mathf.PI / n;
+            x = (float)(radius * Mathf.Cos(theta));
+            y = height / 2;
+            z = (float)(radius * Mathf.Sin(theta));
 
-            float teta = (2* Mathf.PI / meridian * m ); 
+            vertices[i] = new Vector3(x, y, z);
+            vertices[i + n] = new Vector3(x, -y, z);
 
-            vertices[m] = new Vector3(radius*Mathf.Cos(teta), radius * Mathf.Sin(teta), -cylHeight / 2);            // Remplissage de la structure sommet 
-            vertices[m + meridian] = new Vector3(radius * Mathf.Cos(teta), radius * Mathf.Sin(teta), cylHeight/2);
-
-            int nm = (m < meridian - 1) ? m + 1 : 0;
-            int i = m * meridian;
-            triangles[i] = m;                      // Remplissage de la structure triangle. Les sommets sont représentés par leurs indices
-            triangles[i + 1] = m + meridian;                       // les triangles sont représentés par trois indices (et sont mis bout à bout)
-            triangles[i + 2] = nm;
-
-            triangles[i + 3] = m + meridian;
-            triangles[i + 4] = m + 1 + meridian;
-            triangles[i + 5] = nm;
+            if (i < n - 1)
+            {
+                AddTriangle(i, i + n + 1, i + n);
+                AddTriangle(i, i + 1, i + n + 1);
+            }
         }
-       
+        //Close the cylinder
+        AddTriangle(0, n, n - 1);
+        AddTriangle(2 * n - 1, n - 1, n);
 
-        Mesh msh = new Mesh();                          // Création et remplissage du Mesh
+        //Add top and bottom
+        vertices[vertices.Length - 2] = new Vector3(0, height / 2, 0);
+        vertices[vertices.Length - 1] = new Vector3(0, -height / 2, 0);
 
+        for (int i = 0; i < n - 1; i++)
+        {
+            AddTriangle(vertices.Length - 2, i + 1, i);
+            AddTriangle(vertices.Length - 1, i + n, i + n + 1);
+        }
+
+        AddTriangle(vertices.Length - 2, 0, n - 1);
+        AddTriangle(vertices.Length - 1, 2 * n - 1, n);
+
+
+        Mesh msh = new Mesh();
         msh.vertices = vertices;
         msh.triangles = triangles;
 
-        gameObject.GetComponent<MeshFilter>().mesh = msh;           // Remplissage du Mesh et ajout du matériel
-        gameObject.GetComponent<MeshRenderer>().material = mat;
+        gameObject.GetComponent<MeshFilter>().mesh = msh;
     }
+
+    private void AddTriangle(int a, int b, int c)
+    {
+        triangles[k] = a;
+        triangles[k + 1] = b;
+        triangles[k + 2] = c;
+        k = k + 3;
+    }
+
 }
