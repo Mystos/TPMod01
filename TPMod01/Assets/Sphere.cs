@@ -18,6 +18,8 @@ public class Sphere : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        triangles = new int[5000];
+
         gameObject.AddComponent<MeshFilter>();          // Creation d'un composant MeshFilter qui peut ensuite être visualisé
         gameObject.AddComponent<MeshRenderer>();
         gameObject.GetComponent<MeshRenderer>().material = mat;
@@ -35,12 +37,14 @@ public class Sphere : MonoBehaviour
     {
         vertices.Clear();
         float x, y, z, theta, phi;
+        triangles = new int[896547];
+        k = 0;
 
-        for (int p = 0; p < parallel; p++)
+        for (int p = 0; p <= parallel; p++)
         {
             phi = p * (float)Mathf.PI / parallel;
 
-            for (int m = 0; m < meridian; m++)
+            for (int m = 0; m <= meridian; m++)
             {
                 theta = m * 2 * (float)Mathf.PI / meridian;
                 x = radius * Mathf.Sin(phi) * Mathf.Cos(theta);
@@ -48,9 +52,14 @@ public class Sphere : MonoBehaviour
                 z = radius * Mathf.Cos(phi);
 
                 vertices.Add(new Vector3(x, y, z));
-                vertices.Add(new Vector3(x, -y, z));
             }
         }
+
+        Mesh msh = new Mesh();
+        msh.vertices = vertices.ToArray();
+        msh.triangles = GenIndices().ToArray();
+
+        gameObject.GetComponent<MeshFilter>().mesh = msh;
     }
 
     private void OnDrawGizmos()
@@ -68,5 +77,35 @@ public class Sphere : MonoBehaviour
         triangles[k + 1] = b;
         triangles[k + 2] = c;
         k = k + 3;
+    }
+
+    private List<int> GenIndices()
+    {
+        List<int> indices = new List<int>();
+        int k1, k2;
+        for (int i = 0; i < meridian; i++)
+        {
+            k1 = i * (parallel + 1);
+            k2 = k1 + parallel + 1;
+
+            for (int j = 0; j < parallel; j++, k1++, k2++)
+            {
+                if(i != 0)
+                {
+                    indices.Add(k1);
+                    indices.Add(k2);
+                    indices.Add(k1 + 1);
+                }
+
+                if(i != meridian - 1)
+                {
+                    indices.Add(k1 + 1);
+                    indices.Add(k2);
+                    indices.Add(k2 + 1);
+                }
+            }
+        }
+
+        return indices;
     }
 }
