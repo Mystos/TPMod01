@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Sphere : MonoBehaviour
@@ -83,12 +84,12 @@ public class Sphere : MonoBehaviour
     {
         List<int> indices = new List<int>();
         int k1, k2;
-        for (int i = 0; i < meridian; i++)
+        for (int i = 0; i < parallel; i++)
         {
-            k1 = i * (parallel + 1);
-            k2 = k1 + parallel + 1;
+            k1 = i * (meridian + 1);
+            k2 = k1 + meridian + 1;
 
-            for (int j = 0; j < parallel; j++, k1++, k2++)
+            for (int j = 0; j < meridian; j++, k1++, k2++)
             {
                 if(i != 0)
                 {
@@ -97,7 +98,7 @@ public class Sphere : MonoBehaviour
                     indices.Add(k1 + 1);
                 }
 
-                if(i != meridian - 1)
+                if(i != parallel - 1)
                 {
                     indices.Add(k1 + 1);
                     indices.Add(k2);
