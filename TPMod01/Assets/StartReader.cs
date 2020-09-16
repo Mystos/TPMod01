@@ -31,9 +31,13 @@ public class StartReader : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
+    public static Vector3 GetGravityCenter(List<Vector3> listVertex)
     {
-        
+        Vector3 cg = Vector3.zero;
+        foreach(Vector3 vec in listVertex)
+        {
+            cg += vec; 
+        }
+        return cg / listVertex.Count;
     }
 }
