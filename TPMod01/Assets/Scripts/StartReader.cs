@@ -16,7 +16,7 @@ public class StartReader : MonoBehaviour
         List<int> listIndices = new List<int>();
         List<int> listEdges = new List<int>();
         OFFReader.ReadFile(path, out listVertex, out listIndices);
-       // OFFReader.WriteFile(savepath, listVertex, listIndices, listEdges);
+        OFFReader.WriteFile(savepath, listVertex, listIndices, listEdges);
         
 
         gameObject.AddComponent<MeshFilter>();          // Creation d'un composant MeshFilter qui peut ensuite être visualisé

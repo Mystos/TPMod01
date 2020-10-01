@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -71,7 +72,8 @@ public class OFFReader
         format.NumberDecimalSeparator = ".";
         format.NumberDecimalDigits = 18;
 
-        StreamWriter outputFile = new StreamWriter(savePath);
+        FileStream fs = File.Open(savePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+        StreamWriter outputFile = new StreamWriter(fs, Encoding.UTF8);
         outputFile.WriteLine("OFF");
         outputFile.WriteLine(listVertex.Count + " " + listIndices.Count / 3 + " " + listEdges.Count);
 
@@ -80,10 +82,13 @@ public class OFFReader
             outputFile.WriteLine(vertex.x.ToString(format) + " " + vertex.y.ToString(format) + " " + vertex.z.ToString(format));
         }
 
-        for (int i = 0; i <= listIndices.Count - 1; i += 2)
+        for (int i = 0; i < listIndices.Count; i += 3)
         {
             outputFile.WriteLine("3 " + listIndices[i] + " " + listIndices[i+1] + " " + listIndices[i+2]);
         }
+
+        outputFile.Close();
+
     }
 }
 

@@ -33,15 +33,22 @@ public class Box
             end = Vector3.Max(sphere.origin + new Vector3(sphere.radius, sphere.radius, sphere.radius), end);
         }
 
+        Vector3 diag = end - start;
+
+        // Permet de créer le cube englobant
+        float maxLength = Mathf.Max(diag.x, diag.y, diag.z);
+        end.x += maxLength - diag.x;
+        end.y += maxLength - diag.y;
+        end.z += maxLength - diag.z;
+        //////////////////////////////////////////
+
         return new Box(start, end);
     }
 
-    static Box CreateBox(Vector3 start, Vector3 end)
+    public static void CreateBox(Vector3 start, Vector3 end, out Vector3 pos, out Vector3 size)
     {
-        Vector3 pos = (end - start) / 2;
-        Vector3 size = new Vector3(pos.x - start.x, pos.y - start.y, pos.z - start.z);
-
-        return new Box(pos, size);
+        pos = (end - start) / 2;
+        size = new Vector3(pos.x - start.x, pos.y - start.y, pos.z - start.z);
     }
 
 }

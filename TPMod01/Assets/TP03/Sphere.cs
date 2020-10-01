@@ -9,6 +9,7 @@ public class Sphere
     public float radius;
     public Vector3 origin;
     public SphereType sphereType = SphereType.fill;
+    public float forceField = 10;
     public Sphere()
     {
 
