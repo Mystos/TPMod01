@@ -18,12 +18,6 @@ public class CreateVolumeSphere : MonoBehaviour
     [Range(0f, 100f)]
     public float materialTreshold = 0;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-       
-     
-    }
 
     private void OnDrawGizmos()
     {

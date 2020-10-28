@@ -22,6 +22,8 @@ public class OFFReader
         int nbVertex = 0;
         int nbFace = 0;
         int nbEdge = 0;
+        Vector3 gravityCenterPoint = Vector3.zero;
+        float squaredMagnitudePoint = 0;
         listVertex = new List<Vector3>();
         listIndices = new List<int>();
         while ((line = sr.ReadLine()) != null)
@@ -46,10 +48,17 @@ public class OFFReader
                 format.NumberDecimalSeparator = ".";
                 format.NumberDecimalDigits = 18;
                 string[] vector = line.Split(' ');
-                double x = double.Parse(vector[0], format);
-                double y = double.Parse(vector[1], format);
-                double z = double.Parse(vector[2], format);
-                listVertex.Add(new Vector3((float)x, (float)y, (float)z));
+                Vector3 newVertex = new Vector3();
+                newVertex.x = (float)double.Parse(vector[0], format);
+                newVertex.y = (float)double.Parse(vector[1], format);
+                newVertex.z = (float)double.Parse(vector[2], format);
+                listVertex.Add(newVertex);
+                gravityCenterPoint += newVertex;
+                // Getting the furthest point
+                if (newVertex.sqrMagnitude > squaredMagnitudePoint)
+                {
+                    squaredMagnitudePoint = newVertex.sqrMagnitude;
+                }
             }
             else if (i > nbVertex + 1 && i <= nbVertex + nbFace + 1)
             {
@@ -63,6 +72,15 @@ public class OFFReader
             }
             i++;
         }
+
+        // Getting real coordinates of gravity center point
+        gravityCenterPoint /= nbVertex;
+
+        // Centering the mesh around Vector3.zero
+        centeringMesh(ref listVertex, ref gravityCenterPoint);
+
+        //Normlaizing mesh in range [-1;1]
+        normalizeMesh(ref listVertex, ref squaredMagnitudePoint);
     }
 
     public static void WriteFile(string savePath, List<Vector3> listVertex, List<int> listIndices, List<int> listEdges)
@@ -88,6 +106,36 @@ public class OFFReader
         }
 
         outputFile.Close();
+
+    }
+
+    // Normalizing mesh
+    static private void normalizeMesh(ref List<Vector3> vertices, ref float squaredMagnitudePoint)
+    {
+
+        // Normalizing with real magnitude
+        // 1 sqrt is better than vertices.Lenght sqrt !
+        float realMagnitude = Mathf.Sqrt(squaredMagnitudePoint);
+
+        for (int i = 0; i < vertices.Count; i++)
+        {
+            vertices[i] /= realMagnitude;
+        }
+
+    }
+
+    static private void centeringMesh(ref List<Vector3> vertices, ref Vector3 gravityCenterPoint)
+    {
+        // Gravity point is computed in ReadOFF : it avoids reading every point each time
+
+        // Get translation vector
+        Vector3 translate = Vector3.zero - gravityCenterPoint;
+
+        // Translate every vertex
+        for (int i = 0; i < vertices.Count; i++)
+        {
+            vertices[i] += translate;
+        }
 
     }
 }
