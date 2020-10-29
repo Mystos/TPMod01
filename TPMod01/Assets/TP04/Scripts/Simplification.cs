@@ -19,7 +19,7 @@ public class Simplification : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        string path = @"D:\max.off";
+        string path = @"D:\bunny.off";
         OFFReader.ReadFile(path, out List<Vector3> listVertex, out List<int> listIndices);
         originalMesh = new Mesh();
         originalMesh.vertices = listVertex.ToArray();

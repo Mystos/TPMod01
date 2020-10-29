@@ -7,7 +7,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-public class OFFReader
+public class OFFReaderOld
 {
 
     public static void ReadFile(string path, out List<Vector3> listVertex,out List<int> listIndices, out float maxNormal)

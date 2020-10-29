@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StartReader : MonoBehaviour
+public class StartReaderOld : MonoBehaviour
 {
     public Material mat;
     string path = @"D:\bunny.off";
@@ -16,7 +16,7 @@ public class StartReader : MonoBehaviour
     void Start()
     {
 
-        OFFReader.ReadFile(path, out listVertex, out listIndices, out float maxNormal);
+        OFFReaderOld.ReadFile(path, out listVertex, out listIndices, out float maxNormal);
         listVertex = GetNormalizeValue(listVertex, maxNormal);
         //OFFReader.WriteFile(savepath, listVertex, listIndices, listEdges);
 
@@ -64,11 +64,7 @@ public class StartReader : MonoBehaviour
 
         Vector3 pos = (boundingBox.end - boundingBox.start) / 2;
         Vector3 size = new Vector3(pos.x - boundingBox.start.x, pos.y - boundingBox.start.y, pos.z - boundingBox.start.z);
-
-        
-
         Gizmos.DrawWireCube(pos, size);
-
     }
 
 }

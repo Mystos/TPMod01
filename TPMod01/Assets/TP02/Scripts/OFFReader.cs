@@ -10,7 +10,6 @@ using UnityEngine;
 
 public class OFFReader
 {
-
     public static void ReadFile(string path, out List<Vector3> listVertex,out List<int> listIndices)
     {
         FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
