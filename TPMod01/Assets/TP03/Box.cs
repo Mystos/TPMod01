@@ -45,7 +45,25 @@ public class Box
         return new Box(start, end);
     }
 
-    public static void CreateBox(Vector3 start, Vector3 end, out Vector3 pos, out Vector3 size)
+    public static Box CreateBoundingBox(List<Vector3> listVector)
+    {
+        if (listVector.Count <= 0)
+        {
+            return null;
+        }
+        Vector3 start = listVector[0];
+        Vector3 end = listVector[0];
+
+        foreach (Vector3 vec in listVector)
+        {
+            start = Vector3.Min(vec, start);
+            end = Vector3.Max(vec, end);
+        }
+
+        return new Box(start, end);
+    }
+
+    static Box CreateBox(Vector3 start, Vector3 end)
     {
         pos = (end - start) / 2;
         size = new Vector3(pos.x - start.x, pos.y - start.y, pos.z - start.z);
